@@ -116,114 +116,7 @@ app.delete('/users/:id', async (req, res) => {
     }
 });
 
-// Deal routes
-app.post('/deals', async (req, res) => {
-    const deal = new Deal(req.body);
-    try {
-        await deal.save();
-        res.status(201).send(deal);
-    } catch (error) {
-        res.status(400).send(error);
-    }
-});
-
-app.get('/deals', async (req, res) => {
-    try {
-        const deals = await Deal.find();
-        res.status(200).json(deals);
-    } catch (error) {
-        res.status(500).send(error);
-    }
-});
-
-app.put('/deals/:id', async (req, res) => {
-    try {
-        const deal = await Deal.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        if (!deal) {
-            return res.status(404).send();
-        }
-        res.send(deal);
-    } catch (error) {
-        res.status(400).send(error);
-    }
-});
-
-app.delete('/deals/:id', async (req, res) => {
-    try {
-        const deal = await Deal.findByIdAndDelete(req.params.id);
-        if (!deal) {
-            return res.status(404).send();
-        }
-        res.send(deal);
-    } catch (error) {
-        res.status(500).send(error);
-    }
-});
-
-// Discount routes within a deal
-app.post('/deals/:id/discounts', async (req, res) => {
-    const { discount } = req.body;
-    try {
-        const deal = await Deal.findById(req.params.id);
-        if (!deal) {
-            return res.status(404).send('Deal not found');
-        }
-        deal.discounts.push(discount); // assuming discounts is an array in your Deal schema
-        await deal.save();
-        res.status(201).send(deal);
-    } catch (error) {
-        res.status(400).send(error);
-    }
-});
-
-app.get('/deals/:id/discounts', async (req, res) => {
-    try {
-        const deal = await Deal.findById(req.params.id);
-        if (!deal) {
-            return res.status(404).send('Deal not found');
-        }
-        res.status(200).send(deal.discounts);
-    } catch (error) {
-        res.status(500).send(error);
-    }
-});
-
-app.put('/deals/:dealId/discounts/:discountId', async (req, res) => {
-    try {
-        const deal = await Deal.findById(req.params.dealId);
-        if (!deal) {
-            return res.status(404).send('Deal not found');
-        }
-        const discount = deal.discounts.id(req.params.discountId);
-        if (!discount) {
-            return res.status(404).send('Discount not found');
-        }
-        discount.set(req.body);
-        await deal.save();
-        res.send(deal);
-    } catch (error) {
-        res.status(400).send(error);
-    }
-});
-
-app.delete('/deals/:dealId/discounts/:discountId', async (req, res) => {
-    try {
-        const deal = await Deal.findById(req.params.dealId);
-        if (!deal) {
-            return res.status(404).send('Deal not found');
-        }
-        const discount = deal.discounts.id(req.params.discountId);
-        if (!discount) {
-            return res.status(404).send('Discount not found');
-        }
-        discount.remove();
-        await deal.save();
-        res.send(deal);
-    } catch (error) {
-        res.status(500).send(error);
-    }
-});
-
+// Organization routes
 app.post('/organizations', async (req, res) => {
     const organization = new Organization(req.body);
     try {
@@ -236,20 +129,8 @@ app.post('/organizations', async (req, res) => {
 
 app.get('/organizations', async (req, res) => {
     try {
-        const organizations = await Organization.find().populate('deals');
+        const organizations = await Organization.find();
         res.status(200).json(organizations);
-    } catch (error) {
-        res.status(500).send(error);
-    }
-});
-
-app.get('/organizations/:id', async (req, res) => {
-    try {
-        const organization = await Organization.findById(req.params.id).populate('deals');
-        if (!organization) {
-            return res.status(404).send('Organization not found');
-        }
-        res.status(200).send(organization);
     } catch (error) {
         res.status(500).send(error);
     }
@@ -259,7 +140,7 @@ app.put('/organizations/:id', async (req, res) => {
     try {
         const organization = await Organization.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!organization) {
-            return res.status(404).send('Organization not found');
+            return res.status(404).send();
         }
         res.send(organization);
     } catch (error) {
@@ -271,8 +152,72 @@ app.delete('/organizations/:id', async (req, res) => {
     try {
         const organization = await Organization.findByIdAndDelete(req.params.id);
         if (!organization) {
+            return res.status(404).send();
+        }
+        res.send(organization);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
+
+// Discount routes within an organization
+app.post('/organizations/:id/discounts', async (req, res) => {
+    const { discount } = req.body;
+    try {
+        const organization = await Organization.findById(req.params.id);
+        if (!organization) {
             return res.status(404).send('Organization not found');
         }
+        organization.discounts.push(discount); // assuming discounts is an array in your Organization schema
+        await organization.save();
+        res.status(201).send(organization);
+    } catch (error) {
+        res.status(400).send(error);
+    }
+});
+
+app.get('/organizations/:id/discounts', async (req, res) => {
+    try {
+        const organization = await Organization.findById(req.params.id);
+        if (!organization) {
+            return res.status(404).send('Organization not found');
+        }
+        res.status(200).send(organization.discounts);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
+
+app.put('/organizations/:organizationId/discounts/:discountId', async (req, res) => {
+    try {
+        const organization = await Organization.findById(req.params.organizationId);
+        if (!organization) {
+            return res.status(404).send('Organization not found');
+        }
+        const discount = organization.discounts.id(req.params.discountId);
+        if (!discount) {
+            return res.status(404).send('Discount not found');
+        }
+        discount.set(req.body);
+        await organization.save();
+        res.send(organization);
+    } catch (error) {
+        res.status(400).send(error);
+    }
+});
+
+app.delete('/organizations/:organizationId/discounts/:discountId', async (req, res) => {
+    try {
+        const organization = await Organization.findById(req.params.organizationId);
+        if (!organization) {
+            return res.status(404).send('Organization not found');
+        }
+        const discount = organization.discounts.id(req.params.discountId);
+        if (!discount) {
+            return res.status(404).send('Discount not found');
+        }
+        discount.remove();
+        await organization.save();
         res.send(organization);
     } catch (error) {
         res.status(500).send(error);

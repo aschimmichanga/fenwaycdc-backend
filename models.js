@@ -8,20 +8,12 @@ const discountSchema = new mongoose.Schema({
     expiry: Date
 });
 
-const dealSchema = new mongoose.Schema({
+const organizationSchema = new mongoose.Schema({
     name: String,
     discounts: [discountSchema],
     imageUrl: String,
     details: String
 });
 
-const Deal = mongoose.model('Deal', dealSchema);
-
-const organizationSchema = new mongoose.Schema({
-    name: String,
-    imageUrl: String,
-    deals: [dealSchema]
-});
-
 const Organization = mongoose.model('Organization', organizationSchema);
-module.exports = { User, Deal, Organization };
+module.exports = { User, Organization };
