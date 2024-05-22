@@ -7,7 +7,7 @@ const helmet = require('helmet');
 const express = require('express');
 const { User, Deal } = require('./models');
 const db = require('./db');
-
+const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const port = process.env.PORT || 3000;
 
@@ -15,6 +15,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(helmet());
+app.use(morgan('combined'));
 
 const secretKey = process.env.JWT_SECRET_KEY;
 const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS, 10) || 10;
