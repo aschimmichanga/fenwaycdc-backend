@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const express = require('express');
-const { User, Deal } = require('./models');
+const { User, Deal, Organization } = require('./models');
 const db = require('./db');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
@@ -224,6 +224,61 @@ app.delete('/deals/:dealId/discounts/:discountId', async (req, res) => {
     }
 });
 
+app.post('/organizations', async (req, res) => {
+    const organization = new Organization(req.body);
+    try {
+        await organization.save();
+        res.status(201).send(organization);
+    } catch (error) {
+        res.status(400).send(error);
+    }
+});
+
+app.get('/organizations', async (req, res) => {
+    try {
+        const organizations = await Organization.find().populate('deals');
+        res.status(200).json(organizations);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
+
+app.get('/organizations/:id', async (req, res) => {
+    try {
+        const organization = await Organization.findById(req.params.id).populate('deals');
+        if (!organization) {
+            return res.status(404).send('Organization not found');
+        }
+        res.status(200).send(organization);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
+
+app.put('/organizations/:id', async (req, res) => {
+    try {
+        const organization = await Organization.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!organization) {
+            return res.status(404).send('Organization not found');
+        }
+        res.send(organization);
+    } catch (error) {
+        res.status(400).send(error);
+    }
+});
+
+app.delete('/organizations/:id', async (req, res) => {
+    try {
+        const organization = await Organization.findByIdAndDelete(req.params.id);
+        if (!organization) {
+            return res.status(404).send('Organization not found');
+        }
+        res.send(organization);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
+
 async function hashPassword(password) {
     const salt = await bcrypt.genSalt(saltRounds);
     const hash = await bcrypt.hash(password, salt);
@@ -240,21 +295,6 @@ function generateToken(user) {
         issuer: 'FenwayCDCApp', // Optional: Specify the issuer
         audience: 'FenwayCDCMembers' // Optional: Specify the audience
     });
-}
-
-function authenticateToken(req, res, next) {
-    const token = req.headers['authorization']?.split(' ')[1]; // Assume Bearer Token
-    if (!token) {
-        return res.status(401).json({ error: 'No token provided' });
-    }
-
-    try {
-        const decoded = verifyToken(token);
-        req.user = decoded;
-        next();
-    } catch (error) {
-        return res.status(403).json({ error: 'Failed to authenticate token' });
-    }
 }
 
 function verifyToken(token) {

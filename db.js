@@ -34,56 +34,56 @@ function insertDeals() {
         {
             id: 1,
             name: 'Tenderoni\'s',
-            discounts: [('Free Fries with purchase of $10+', new Date(2025, 4, 4)), ('20% off any meal', new Date(2025, 4, 4)), ("Buy one get one free", new Date(2025, 4, 4)), ("25% off your next order", new Date(2025, 4, 4)), ("50% off a side of fries", new Date(2025, 4, 4))],
+            discounts: [{ description: 'Free Fries with purchase of $10+', expiry: new Date(2025, 4, 4) }, { description: '20% off any meal', expiry: new Date(2025, 4, 4) }, { description: "Buy one get one free", expiry: new Date(2025, 4, 4) }, { description: "25% off your next order", expiry: new Date(2025, 4, 4) }, { description: "50% off a side of fries", expiry: new Date(2025, 4, 4) }],
             imageUrl: categoriesImages.pizza
         },
         {
             id: 2,
             name: 'Economy True Value',
-            discounts: [('10% discount', null)],
+            discounts: [{ description: '10% discount', expiry: null }],
             imageUrl: categoriesImages.hardware
         },
         {
             id: 3,
             name: 'Fern Flowers',
-            discounts: [('10% discount', null)],
+            discounts: [{ description: '10% discount', expiry: null }],
             imageUrl: categoriesImages.flowers
         },
         {
             id: 4,
             name: 'El Pelon Taqueria',
-            discounts: [("A free 'Mountain Dew' drink with $10 purchase", null)],
+            discounts: [{ description: "A free 'Mountain Dew' drink with $10 purchase", expiry: null }],
             imageUrl: categoriesImages.mexican
         },
         {
             id: 5,
             name: 'Saloniki Greek',
-            discounts: [("Enjoy free fries with purchase of $10+", null)],
+            discounts: [{ description: "Enjoy free fries with purchase of $10+", expiry: null }],
             details: 'This offer is only valid at the Fenway location',
             imageUrl: categoriesImages.greek
         },
         {
             id: 6,
             name: 'Basho Japanese Brasserie',
-            discounts: [('10% off any catering order of $100+', null)],
+            discounts: [{ description: '10% off any catering order of $100+', expiry: null }],
             imageUrl: categoriesImages.sushi
         },
         {
             id: 7,
             name: 'Huntington Theater',
-            discounts: [("$20 tickets", null)],
+            discounts: [{ description: "$20 tickets", expiry: null }],
             imageUrl: categoriesImages.theater
         },
         {
             id: 8,
             name: 'YMCA Huntington',
-            discounts: [("10% off YMCA membership", null)],
+            discounts: [{ description: "10% off YMCA membership", expiry: null }],
             imageUrl: categoriesImages.gym
         },
         {
             id: 9,
             name: 'Boston Red Sox',
-            discounts: [("Free tickets for Neighborhood Night Red Sox games, movie nights, and other events", null)],
+            discounts: [{ description: "Free tickets for Neighborhood Night Red Sox games, movie nights, and other events", expiry: null }],
             details: "Giveaways are organized for members by the Fenway CDC team when tickets are available",
             imageUrl: categoriesImages.red_socks
         },];
