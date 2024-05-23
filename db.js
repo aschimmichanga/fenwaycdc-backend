@@ -1,6 +1,6 @@
-require('dotenv').config();
-const mongoose = require('mongoose');
-const { Organization, Admin } = require('./models');
+import 'dotenv/config';
+import mongoose from 'mongoose';
+import { Organization, Admin } from './models';
 
 const dbURI = process.env.MONGODB_URI;
 
@@ -101,4 +101,4 @@ function insertAdminInfo() {
         .catch(err => console.error('Failed to insert admin info', err));
 }
 
-module.exports = db;
+export default db

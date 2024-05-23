@@ -1,14 +1,14 @@
-require('dotenv').config();
+import 'dotenv/config';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import rateLimit from 'express-rate-limit';
+import helmet from 'helmet';
+import express from 'express';
+import { User, Organization, Admin } from './models';
+import db from './db';
+import morgan from 'morgan';
+import bodyParser from 'body-parser';
 
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const rateLimit = require('express-rate-limit');
-const helmet = require('helmet');
-const express = require('express');
-const { User, Organization, Admin } = require('./models');
-const db = require('./db');
-const morgan = require('morgan');
-const bodyParser = require('body-parser');
 const port = process.env.PORT || 3000;
 
 const app = express();
@@ -284,8 +284,8 @@ async function checkPassword(password, hash) {
 function generateToken(user) {
     return jwt.sign({ id: user.id, email: user.email }, secretKey, {
         expiresIn: '1h',
-        issuer: 'FenwayCDCApp', // Optional: Specify the issuer
-        audience: 'FenwayCDCMembers' // Optional: Specify the audience
+        issuer: 'FenwayCDCApp',
+        audience: 'FenwayCDCMembers'
     });
 }
 
@@ -297,6 +297,11 @@ function verifyToken(token) {
     }
 }
 
-app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
-});
+module.exports = app; // Export the app for testing
+
+// Start the server only if this file is run directly
+if (require.main === module) {
+    app.listen(port, () => {
+        console.log(`Server running on port ${port}`);
+    });
+}

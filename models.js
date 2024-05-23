@@ -1,14 +1,14 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const adminSchema = new mongoose.Schema({
     pin: { type: String },
     imageUrl: { type: String }
 });
 
-const Admin = mongoose.model('Admin', adminSchema);
+export const Admin = mongoose.model('Admin', adminSchema);
 
 const userSchema = new mongoose.Schema({ name: String, password: String });
-const User = mongoose.model('User', userSchema);
+export const User = mongoose.model('User', userSchema);
 
 const discountSchema = new mongoose.Schema({
     description: String,
@@ -22,5 +22,4 @@ const organizationSchema = new mongoose.Schema({
     details: String
 });
 
-const Organization = mongoose.model('Organization', organizationSchema);
-module.exports = { User, Organization, Admin };
+export const Organization = mongoose.model('Organization', organizationSchema);
