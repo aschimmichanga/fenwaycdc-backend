@@ -1,5 +1,12 @@
 const mongoose = require('mongoose');
 
+const adminSchema = new mongoose.Schema({
+    pin: { type: String },
+    imageUrl: { type: String }
+});
+
+const Admin = mongoose.model('Admin', adminSchema);
+
 const userSchema = new mongoose.Schema({ name: String, password: String });
 const User = mongoose.model('User', userSchema);
 
@@ -16,4 +23,4 @@ const organizationSchema = new mongoose.Schema({
 });
 
 const Organization = mongoose.model('Organization', organizationSchema);
-module.exports = { User, Organization };
+module.exports = { User, Organization, Admin };

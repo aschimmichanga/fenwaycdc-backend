@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const express = require('express');
-const { User, Deal, Organization } = require('./models');
+const { User, Organization, Admin } = require('./models');
 const db = require('./db');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
@@ -219,6 +219,53 @@ app.delete('/organizations/:organizationId/discounts/:discountId', async (req, r
         discount.remove();
         await organization.save();
         res.send(organization);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
+
+// Admin routes
+app.post('/admin/verify-pin', async (req, res) => {
+    const { pin } = req.body;
+
+    try {
+        const admin = await Admin.findOne();
+        if (!admin) {
+            return res.status(404).send('Admin not found');
+        }
+
+        if (admin.pin !== pin) {
+            return res.status(401).send('Invalid PIN');
+        }
+
+        res.status(200).send('PIN verified');
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
+
+app.put('/admin/image', async (req, res) => {
+    const { imageUrl } = req.body;
+
+    try {
+        const admin = await Admin.findOne();
+        if (!admin) {
+            return res.status(404).send('Admin not found');
+        }
+
+        admin.imageUrl = imageUrl;
+        await admin.save();
+
+        res.status(200).send(admin);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
+
+app.get('/admin/image', async (req, res) => {
+    try {
+        const admin = await Admin.findOne();
+        res.status(200).json({ imageUrl: admin.imageUrl });
     } catch (error) {
         res.status(500).send(error);
     }

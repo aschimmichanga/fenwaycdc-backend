@@ -1,6 +1,6 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
-const { Deal } = require('./models');
+const { Organization, Admin } = require('./models');
 
 const dbURI = process.env.MONGODB_URI;
 
@@ -14,10 +14,11 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => {
     console.log('Connected to MongoDB');
-    insertDeals();
+    insertOrganizations();
+    insertAdminInfo();
 });
 
-function insertDeals() {
+function insertOrganizations() {
     const categoriesImages = {
         sushi: 'https://res.cloudinary.com/dguy8o0uf/image/upload/v1713049742/sushi_jvq1fd.jpg',
         pizza: 'https://res.cloudinary.com/dguy8o0uf/image/upload/v1713125530/apple-event.64d9fae8.jpeg_3_yp2vr4.png',
@@ -30,7 +31,7 @@ function insertDeals() {
         gym: 'https://res.cloudinary.com/dguy8o0uf/image/upload/v1713297686/Screenshot_2024-04-16_at_4.00.32_PM_n8zi4l.png',
     }
 
-    const deals = [
+    const organizations = [
         {
             id: 1,
             name: 'Tenderoni\'s',
@@ -88,9 +89,16 @@ function insertDeals() {
             imageUrl: categoriesImages.red_socks
         },];
 
-    Deal.insertMany(deals)
-        .then(() => console.log('Deals inserted successfully'))
-        .catch(err => console.error('Failed to insert deals', err));
+    Organization.insertMany(organizations)
+        .then(() => console.log('Organizations inserted successfully'))
+        .catch(err => console.error('Failed to insert organizations', err));
+}
+
+function insertAdminInfo() {
+    const admin = { pin: process.env.ADMIN_PIN, imageUrl: "https://res.cloudinary.com/dguy8o0uf/image/upload/v1714426043/Taste_of_The_Fenway_logo_3_3_oop4zg.jpg" };
+    Admin.create(admin)
+        .then(() => console.log('Admin info inserted successfully'))
+        .catch(err => console.error('Failed to insert admin info', err));
 }
 
 module.exports = db;
